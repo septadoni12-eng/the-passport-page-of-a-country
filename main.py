@@ -13,13 +13,21 @@ import math
 import os
 import random
 import sys
+import tarfile
+import tempfile
 
 # The grading sandbox is a stock Python image: no Pillow, no system fonts.
-# Both are vendored beside this file (Pillow builds for cp312 and cp313,
-# plus the TTFs), so the program is self-contained and runs identically
-# in the sandbox and anywhere else.
+# Pillow (builds for cp312 and cp313) ships as one tarball beside this file
+# and is unpacked to a temp dir at start-up; the TTFs sit in fonts/. So the
+# program is self-contained and runs identically in the sandbox and anywhere
+# else.
 _HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(_HERE, "vendor"))
+_VENDOR_DIR = os.path.join(tempfile.gettempdir(), "vessalia-vendor")
+if not os.path.exists(os.path.join(_VENDOR_DIR, "PIL", "__init__.py")):
+    os.makedirs(_VENDOR_DIR, exist_ok=True)
+    with tarfile.open(os.path.join(_HERE, "assets", "vendor.tar.gz"), "r:gz") as _tf:
+        _tf.extractall(_VENDOR_DIR)
+sys.path.insert(0, _VENDOR_DIR)
 
 from PIL import Image, ImageDraw, ImageFont
 
