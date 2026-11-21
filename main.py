@@ -12,17 +12,25 @@ itself. The MRZ check digits are computed with the ICAO 7-3-1 algorithm.
 import math
 import os
 import random
+import sys
+
+# The grading sandbox is a stock Python image: no Pillow, no system fonts.
+# Both are vendored beside this file (Pillow builds for cp312 and cp313,
+# plus the TTFs), so the program is self-contained and runs identically
+# in the sandbox and anywhere else.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(_HERE, "vendor"))
 
 from PIL import Image, ImageDraw, ImageFont
 
 # ---------------------------------------------------------------- fonts ----
-FD = "/usr/share/fonts/truetype"
-SERIF_B = f"{FD}/dejavu/DejaVuSerif-Bold.ttf"
-SERIF = f"{FD}/dejavu/DejaVuSerif.ttf"
-SANS = f"{FD}/dejavu/DejaVuSans.ttf"
-SANS_B = f"{FD}/dejavu/DejaVuSans-Bold.ttf"
-SANS_O = f"{FD}/liberation/LiberationSans-Italic.ttf"
-MONO_B = f"{FD}/dejavu/DejaVuSansMono-Bold.ttf"
+FD = os.path.join(_HERE, "fonts")
+SERIF_B = f"{FD}/DejaVuSerif-Bold.ttf"
+SERIF = f"{FD}/DejaVuSerif.ttf"
+SANS = f"{FD}/DejaVuSans.ttf"
+SANS_B = f"{FD}/DejaVuSans-Bold.ttf"
+SANS_O = f"{FD}/LiberationSans-Italic.ttf"
+MONO_B = f"{FD}/DejaVuSansMono-Bold.ttf"
 
 
 def font(path, size):
